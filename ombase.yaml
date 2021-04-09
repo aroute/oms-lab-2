@@ -1,0 +1,37 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+ name: om-base-pvc
+spec:
+  accessModes:
+   - ReadWriteMany
+  resources:
+   requests:
+     storage: "20Gi"
+  storageClassName: "ibmc-file-gold"
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: om-base-pod
+spec:
+  volumes:
+    - name: om-base-storage
+      persistentVolumeClaim:
+       claimName: om-base-pvc
+  containers:
+    - name: om-base-container
+      image: image-registry.openshift-image-registry.svc:5000/oms/om-base:10.0.0.19-amd64
+      command: ["/bin/bash", "-ce", "tail -f /dev/null"]
+      args: 
+        - OMUSER=1000;
+          VOL_DIR=/shared;
+          chown -R ${OMUSER}:${OMUSER} ${VOL_DIR};
+          chown -R 1000:1000 ${VOL_DIR};
+          while true; 
+          do sleep 30; 
+          done;
+      volumeMounts:
+        - mountPath: "/shared"
+          name: om-base-storage
+  restartPolicy: OnFailure
