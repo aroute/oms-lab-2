@@ -1,0 +1,150 @@
+appserver:
+  config:
+    corethreads: 20
+    database:
+      maxPoolSize: 50
+      minPoolSize: 10
+    jvm:
+      params: []
+      xms: 1024m
+      xmx: 2048m
+    libertyServerXml: ''
+    libertyStartupWrapper: /opt/ibm/helpers/runtime/docker-server.sh
+    maxthreads: 100
+    serverName: DefaultAppServer
+    vendor: websphere
+    vendorFile: servers.properties
+  deploymentStrategy: {}
+  exposeRestService: false
+  image:
+    names:
+      - name: om-app
+        probePath: /smcfs/heartbeat/heartbeat.jsp
+    pullPolicy: IfNotPresent
+    tag: 10.0.0.19-amd64
+  ingress:
+    annotations: {}
+    contextRoots:
+      - smcfs
+      - sbc
+      - sma
+      - isccs
+      - wsc
+      - adminCenter
+    controller: nginx
+    host: 'sandbox01.innovationcloud.info'
+    labels: {}
+    ssl:
+      enabled: true
+      secretname: ''
+  livenessCheckBeginAfterSeconds: 900
+  livenessFailRestartAfterMinutes: 10
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution: []
+    requiredDuringSchedulingIgnoredDuringExecution: {}
+  podAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution: []
+    requiredDuringSchedulingIgnoredDuringExecution: []
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution: []
+    replicaNotOnSameNode:
+      mode: prefer
+      weightForPreference: 100
+    requiredDuringSchedulingIgnoredDuringExecution: []
+  podLabels: {}
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 3840Mi
+    requests:
+      cpu: 1
+      memory: 2560Mi
+  service:
+    annotations: {}
+    http:
+      port: 9080
+    https:
+      port: 9443
+    labels: {}
+  tolerations: []
+datasetup:
+#  fixPack:
+#    installedFPNo: null
+#    loadFPFactoryData: ''
+  loadFactoryData: 'donotinstall'
+#  mode: create
+global:
+  appSecret: 'oms-secret'
+  arch:
+    amd64: 2 - No preference
+    ppc64le: 2 - No preference
+  customConfigMaps: []
+  customSecrets: []
+  customerOverrides: []
+  database:
+    datasourceName: jdbc/OMDS
+    dbname: 'OMDB'
+    dbvendor: DB2
+    port: 30557
+    schema: 'OMDB'
+    serverName: '75.126.247.251'
+    systemPool: true
+    user: 'db2inst1'
+  envs: []
+  image:
+    repository: image-registry.openshift-image-registry.svc:5000/oms
+  license: true
+  license_store_call_center: true
+  log:
+    format: json
+  mq:
+    bindingConfigName: ''
+    bindingMountPath: /opt/ssfs/.bindings
+  persistence:
+    claims:
+      accessMode: ReadWriteMany
+      capacity: 20
+      capacityUnit: Gi
+      name: oms-common
+      storageClassName: ibmc-file-gold
+    securityContext:
+      fsGroup: 65534
+      supplementalGroup: 65534
+  serviceAccountName: oms-sa
+omserver:
+  common:
+    jvmArgs: '-Xms512m -Xmx1024m'
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution: []
+      requiredDuringSchedulingIgnoredDuringExecution: {}
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution: []
+      requiredDuringSchedulingIgnoredDuringExecution: []
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution: []
+      replicaNotOnSameNode:
+        mode: prefer
+        weightForPreference: 100
+      requiredDuringSchedulingIgnoredDuringExecution: []
+    podLabels: {}
+    readinessFailRestartAfterMinutes: 10
+    replicaCount: 1
+    resources:
+      limits:
+        cpu: 1
+        memory: 2048Mi
+      requests:
+        cpu: 0.5
+        memory: 1024Mi
+    tolerations: []
+  deployHealthMonitor: true
+  deploymentStrategy: {}
+  image:
+    name: om-agent
+    pullPolicy: IfNotPresent
+    tag: 10.0.0.19-amd64
+  servers:
+    - group: Default Server
+      name:
+        - ''
